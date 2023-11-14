@@ -1,4 +1,4 @@
-export default dataPlant = [
+const dataPlant = [
     {
       id: 1,
       name: 'Arándanos',
@@ -186,3 +186,4 @@ export default dataPlant = [
     // Agrega más plantas con sus detalles aquí
   ];
   
+export default dataPlant;

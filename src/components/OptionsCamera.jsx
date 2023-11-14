@@ -1,38 +1,72 @@
-import React from 'react';
-import { View, Button, StyleSheet } from 'react-native';
+import React from "react";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { Link } from "react-router-native";
+import * as DocumentPicker from "expo-document-picker";
+import { useFile } from "../context/FileContext";
 
 function OptionsCamera() {
+
+  const { uploadFile } = useFile();
+
+  const selectImg = async () => {
+    try {
+      const file = await DocumentPicker.getDocumentAsync({
+        type: "image/*",
+      });
+      const asset = file.assets;
+
+      if (!asset) return;
+
+      const image = asset[0];
+      uploadFile(image.file);
+      console.log(image.file);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <View style={styles.container}>
-      <View style={styles.buttonContainer}>
-        <Button
-          title="Subir foto"
-          onPress={() => { /* Agrega la lógica aquí */ }}
-          color="#53ac59" // Color del texto
-        />
-      </View>
-      <View style={styles.buttonContainer}>
-        <Button
-          title="Usar cámara"
-          onPress={() => { /* Agrega la lógica aquí */ }}
-          color="#53ac59" // Color del texto
-        />
-      </View>
+      <TouchableOpacity
+        style={[styles.button, styles.buttonUpload]}
+        onPress={selectImg}
+      >
+        <Text style={styles.buttonText}>Subir foto</Text>
+      </TouchableOpacity>
+      <Link to="/camera">
+        <View style={styles.linkButton}>
+          <Text style={styles.buttonText}>Usar cámara</Text>
+        </View>
+      </Link>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: "#03484c",
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#03484c'
+    alignItems: "center",
+    justifyContent: "center",
   },
-  buttonContainer: {
-    marginVertical: 10,
+  button: {
+    backgroundColor: "#53ac59",
+    padding: 10,
+    paddingHorizontal: 85,
+    margin: 5,
     borderRadius: 5,
-    width: 200, // Ancho del botón
+    alignItems: "center",
+  },
+  buttonText: {
+    color: "#fff",
+  },
+  linkButton: {
+    backgroundColor: "#53ac59",
+    padding: 10,
+    paddingHorizontal: 85,
+    margin: 5,
+    borderRadius: 5,
+    alignItems: "center",
   },
 });
 

@@ -1,8 +1,7 @@
 import React from "react";
 import { View, Text, Image, StyleSheet, FlatList } from "react-native";
 import { Link } from "react-router-native";
-import dataPlant from "../data/dataPlant";
-import Constants from "expo-constants";
+import dataPlant from "../data/dataPlant.js";
 
 function ListPlant() {
   return (
