@@ -1,18 +1,20 @@
 import React, { useState, useEffect, useRef } from "react";
 import { View, Text, StyleSheet, Image } from "react-native";
-import { Camera, CameraType } from "expo-camera";
+import { Camera } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
 import ButtonCamera from "./ButtonCamera/ButtonCamera";
 import { useFile } from "../context/FileContext";
 
 function ViewCamera() {
+  const [touch, setTouch] = useState(false);
   const [hasCameraPermission, setHasCameraPermission] = useState(null);
   const [image, setImage] = useState(null);
+  const [fileData, setFileData] = useState(null);
   const [type, setType] = useState(Camera.Constants.Type.back);
   const [flash, setFlash] = useState(Camera.Constants.FlashMode.off);
   const cameraRef = useRef(null);
 
-  const { uploadFile } = useFile()
+  const { uploadFile } = useFile();
 
   useEffect(() => {
     (async () => {
@@ -25,13 +27,39 @@ function ViewCamera() {
   const takePicture = async () => {
     if (cameraRef) {
       try {
+        setTouch(true)
         const data = await cameraRef.current.takePictureAsync();
-        console.log(data);
-        setImage(data.uri);
-        uploadFile(data)
+        const { uri } = data;
+        const asset = await MediaLibrary.createAssetAsync(uri);
+        setImage(uri);
+        console.log(asset);
+
+        if (asset) {
+          const assetDetails = await MediaLibrary.getAssetInfoAsync(asset);
+          console.log(assetDetails);
+          const size = assetDetails.height * assetDetails.width;
+          const mimeType =
+            assetDetails.mediaType === "photo" ? "image/jpeg" : "unknown";
+
+          const formData = {
+            uri: assetDetails.uri,
+            type: mimeType,
+            name: assetDetails.filename,
+            size: size,
+            lastModified: assetDetails.creationTime,
+          };
+          setFileData(formData);
+        }
       } catch (error) {
         console.log("Error al tomar la fotografía:", error);
       }
+    }
+  };
+
+  const sendImage = async () => {
+    if (image) {
+      uploadFile(fileData);
+    } else {
     }
   };
 
@@ -56,19 +84,19 @@ function ViewCamera() {
         {image ? (
           <View style={styles.buttons}>
             <ButtonCamera
-              title={"Tomar otra vez"}
+              title={""}
               icon={"retweet"}
               onPress={() => setImage(null)}
             />
-            <ButtonCamera title={"Enviar"} icon={"check"} />
+            <ButtonCamera title={""} icon={"check"} onPress={sendImage} />
           </View>
-        ) : (
+        ) : !touch ? (
           <ButtonCamera
             title={"Tomar fotografía"}
             icon={"camera"}
             onPress={takePicture}
           />
-        )}
+        ) : null}
       </View>
     </View>
   );

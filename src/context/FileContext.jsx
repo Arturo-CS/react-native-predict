@@ -18,7 +18,7 @@ export const FileProvider = ({ children }) => {
     formData.append("file", file); // Asegúrate de nombrar el archivo como "file"
 
     // Realiza la solicitud POST al backend
-    const response = await fetch("http://127.0.0.1:5000/uploadfile", {
+    const response = await fetch("http://192.168.0.3:5000/uploadfile", {
       method: "POST",
       body: formData,
     });

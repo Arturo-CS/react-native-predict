@@ -3,9 +3,9 @@ import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { Link } from "react-router-native";
 import * as DocumentPicker from "expo-document-picker";
 import { useFile } from "../context/FileContext";
+import { Platform } from "react-native";
 
 function OptionsCamera() {
-
   const { uploadFile } = useFile();
 
   const selectImg = async () => {
@@ -13,13 +13,29 @@ function OptionsCamera() {
       const file = await DocumentPicker.getDocumentAsync({
         type: "image/*",
       });
+
       const asset = file.assets;
 
       if (!asset) return;
 
       const image = asset[0];
-      uploadFile(image.file);
-      console.log(image.file);
+
+      // Asegúrate de que estás creando un nuevo objeto FormData y adjuntando el archivo correctamente
+      let dataToSend;
+      if (Platform.OS === "web") {
+        dataToSend = image.file; // Para la plataforma web
+      } else {
+        dataToSend = {
+          uri: image.uri,
+          type: image.mimeType,
+          name: image.name,
+          size: image.size,
+          lastModified: image.lastModified,
+        };
+      }
+
+      uploadFile(dataToSend);
+      console.log(dataToSend);
     } catch (error) {
       console.log(error);
     }
