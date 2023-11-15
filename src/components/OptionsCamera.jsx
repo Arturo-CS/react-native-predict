@@ -1,12 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { Link } from "react-router-native";
 import * as DocumentPicker from "expo-document-picker";
 import { useFile } from "../context/FileContext";
-import { Platform } from "react-native";
+import ViewResult from "./ResultPredict/ViewResult";
 
 function OptionsCamera() {
   const { uploadFile } = useFile();
+  const [showResult, setShowResult] = useState(false);
+  const [label, setLabel] = useState('')
 
   const selectImg = async () => {
     try {
@@ -34,8 +36,12 @@ function OptionsCamera() {
         };
       }
 
-      uploadFile(dataToSend);
+      const result = await uploadFile(dataToSend);
+      setLabel(result.label)
       console.log(dataToSend);
+
+      // Mostrar el resultado después de subir la foto
+      setShowResult(true);
     } catch (error) {
       console.log(error);
     }
@@ -43,17 +49,23 @@ function OptionsCamera() {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity
-        style={[styles.button, styles.buttonUpload]}
-        onPress={selectImg}
-      >
-        <Text style={styles.buttonText}>Subir foto</Text>
-      </TouchableOpacity>
-      <Link to="/camera">
-        <View style={styles.linkButton}>
-          <Text style={styles.buttonText}>Usar cámara</Text>
-        </View>
-      </Link>
+      {showResult ? (
+        <ViewResult label={label}/> // Muestra ViewResult si showResult es true
+      ) : (
+        <>
+          <TouchableOpacity
+            style={[styles.button, styles.buttonUpload]}
+            onPress={selectImg}
+          >
+            <Text style={styles.buttonText}>Subir foto</Text>
+          </TouchableOpacity>
+          <Link to="/camera">
+            <View style={styles.linkButton}>
+              <Text style={styles.buttonText}>Usar cámara</Text>
+            </View>
+          </Link>
+        </>
+      )}
     </View>
   );
 }

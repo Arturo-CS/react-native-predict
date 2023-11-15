@@ -1,12 +1,15 @@
 import React, { useState, useEffect, useRef } from "react";
-import { View, Text, StyleSheet, Image } from "react-native";
+import { View, Text, StyleSheet, Image, ActivityIndicator } from "react-native";
 import { Camera } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
 import ButtonCamera from "./ButtonCamera/ButtonCamera";
 import { useFile } from "../context/FileContext";
+import ViewResult from "./ResultPredict/ViewResult";
 
 function ViewCamera() {
-  const [touch, setTouch] = useState(false);
+  const [label, setLabel] = useState("");
+  const [showResult, setShowResult] = useState(false);
+  const [loading, setLoading] = useState(false); // Nuevo estado para indicar si está cargando
   const [hasCameraPermission, setHasCameraPermission] = useState(null);
   const [image, setImage] = useState(null);
   const [fileData, setFileData] = useState(null);
@@ -27,16 +30,14 @@ function ViewCamera() {
   const takePicture = async () => {
     if (cameraRef) {
       try {
-        setTouch(true)
+        setLoading(true); // Muestra el spinner al tomar la foto
         const data = await cameraRef.current.takePictureAsync();
         const { uri } = data;
         const asset = await MediaLibrary.createAssetAsync(uri);
         setImage(uri);
-        console.log(asset);
 
         if (asset) {
           const assetDetails = await MediaLibrary.getAssetInfoAsync(asset);
-          console.log(assetDetails);
           const size = assetDetails.height * assetDetails.width;
           const mimeType =
             assetDetails.mediaType === "photo" ? "image/jpeg" : "unknown";
@@ -52,15 +53,18 @@ function ViewCamera() {
         }
       } catch (error) {
         console.log("Error al tomar la fotografía:", error);
+      } finally {
+        setLoading(false); // Oculta el spinner después de tomar la foto
       }
     }
   };
 
   const sendImage = async () => {
-    if (image) {
-      uploadFile(fileData);
-    } else {
-    }
+    setLoading(true); // Muestra el spinner antes de enviar la imagen
+    const result = await uploadFile(fileData);
+    setLabel(result.label);
+    setShowResult(true);
+    setLoading(false); // Oculta el spinner después de enviar la imagen
   };
 
   if (!hasCameraPermission) {
@@ -68,36 +72,45 @@ function ViewCamera() {
   }
 
   return (
-    <View style={styles.container}>
-      {image ? (
-        <Image source={{ uri: image }} style={styles.camera} />
+    <View style={showResult ? styles.containerResult : styles.container}>
+      {showResult ? (
+        <>
+          {loading && <ActivityIndicator size="large" color="#ffffff" />}
+          <ViewResult label={label} />
+        </>
       ) : (
-        <Camera
-          style={styles.camera}
-          type={type}
-          flashMode={flash}
-          ref={cameraRef}
-        ></Camera>
-      )}
-
-      <View>
-        {image ? (
-          <View style={styles.buttons}>
-            <ButtonCamera
-              title={""}
-              icon={"retweet"}
-              onPress={() => setImage(null)}
+        <>
+          {image ? (
+            <Image source={{ uri: image }} style={styles.camera} />
+          ) : (
+            <Camera
+              style={styles.camera}
+              type={type}
+              flashMode={flash}
+              ref={cameraRef}
             />
-            <ButtonCamera title={""} icon={"check"} onPress={sendImage} />
+          )}
+
+          <View>
+            {image ? (
+              <View style={styles.buttons}>
+                <ButtonCamera
+                  title={""}
+                  icon={"retweet"}
+                  onPress={() => setImage(null)}
+                />
+                <ButtonCamera title={""} icon={"check"} onPress={sendImage} />
+              </View>
+            ) : (
+              <ButtonCamera
+                title={"Tomar fotografía"}
+                icon={"camera"}
+                onPress={takePicture}
+              />
+            )}
           </View>
-        ) : !touch ? (
-          <ButtonCamera
-            title={"Tomar fotografía"}
-            icon={"camera"}
-            onPress={takePicture}
-          />
-        ) : null}
-      </View>
+        </>
+      )}
     </View>
   );
 }
@@ -109,6 +122,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     padding: 8,
     paddingBottom: 15,
+  },
+  containerResult: {
+    flex: 1,
+    backgroundColor: "#0f684b",
+    justifyContent: "center",
+    padding: 8,
+    paddingBottom: 15,
+    color: "#f1f1f1",
   },
   camera: {
     flex: 1,
