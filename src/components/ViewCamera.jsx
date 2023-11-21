@@ -137,8 +137,7 @@ const styles = StyleSheet.create({
   },
   buttons: {
     flexDirection: "row",
-    justifyContent: "center",
-    paddingHorizontal: 50,
+    justifyContent: "space-around", // o "space-around"
   },
 });
 
