@@ -1,0 +1,1 @@
+export const NEURONAL_NETWORK = "http://192.168.0.7:5000"

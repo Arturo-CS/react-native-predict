@@ -21,13 +21,13 @@ function Home() {
 
         {/* Botón para explorar plantas con Link */}
         <Link to="/list"> 
-          <View style={styles.button}>
+          <View style={styles.button1}>
             <Text style={styles.buttonText}>Explorar plantas</Text>
           </View>
         </Link>
 
         <Link to="/options">
-          <View style={styles.button}>
+          <View style={styles.button2}>
             <Text style={styles.buttonText}>Fotografiar hojas</Text>
           </View>
         </Link>
@@ -38,7 +38,7 @@ function Home() {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#03484c',
+    backgroundColor: '#e5f1f9',
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 10,
-    color: '#fff',
+    color: '#1c455e',
   },
   circularImage: {
     width: 320,
@@ -64,16 +64,24 @@ const styles = StyleSheet.create({
   slogan: {
     fontSize: 16,
     marginBottom: 20,
-    color: '#009ddd',
+    color: '#75bde1',
     fontWeight: 'bold',
   },
   buttonContainer: {
     flexDirection: 'column',
   },
-  button: {
-    backgroundColor: '#53ac59',
+  button1: {
+    backgroundColor: '#3295c5',
     padding: 10,
-    paddingHorizontal: 75,
+    paddingHorizontal: 80,
+    margin: 5,
+    borderRadius: 5,
+    alignItems: 'center'
+  },
+  button2: {
+    backgroundColor: '#3295c5',
+    padding: 10,
+    paddingHorizontal: 76,
     margin: 5,
     borderRadius: 5,
     alignItems: 'center'

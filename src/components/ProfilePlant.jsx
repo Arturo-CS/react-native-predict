@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 10,
-    backgroundColor: '#03484c'
+    backgroundColor: '#0f2412'
   },
   cardContainer: {
     backgroundColor: "#fff",

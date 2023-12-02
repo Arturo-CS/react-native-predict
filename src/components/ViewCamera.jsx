@@ -17,7 +17,7 @@ function ViewCamera() {
   const [flash, setFlash] = useState(Camera.Constants.FlashMode.off);
   const cameraRef = useRef(null);
 
-  const { uploadFile } = useFile();
+  const { uploadFile, uploadFileBlue } = useFile();
 
   useEffect(() => {
     (async () => {
@@ -61,7 +61,7 @@ function ViewCamera() {
 
   const sendImage = async () => {
     setLoading(true); // Muestra el spinner antes de enviar la imagen
-    const result = await uploadFile(fileData);
+    const result = await uploadFileBlue(fileData);
     setLabel(result.label);
     setShowResult(true);
     setLoading(false); // Oculta el spinner después de enviar la imagen
@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
   },
   containerResult: {
     flex: 1,
-    backgroundColor: "#0f684b",
+    backgroundColor: "#0f2412",
     justifyContent: "center",
     padding: 8,
     paddingBottom: 15,

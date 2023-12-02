@@ -1,5 +1,6 @@
 import { useContext, createContext, useState } from "react";
 import { uploadImage } from "../api/network.js";
+import { NEURONAL_NETWORK } from "../config/neuronalNetwork.js";
 
 export const FileContext = createContext();
 
@@ -18,7 +19,27 @@ export const FileProvider = ({ children }) => {
     formData.append("file", file); // Asegúrate de nombrar el archivo como "file"
 
     // Realiza la solicitud POST al backend
-    const response = await fetch("http://192.168.0.3:5000/uploadfile", {
+    const response = await fetch(`${NEURONAL_NETWORK}/uploadfile`, {
+      method: "POST",
+      body: formData,
+    });
+
+    // Manejo de la respuesta del backend
+    if (response.ok) {
+      const data = await response.json();
+      console.log(data); // Muestra la respuesta en la consola del navegador
+      return data; // Podrías retornar la respuesta si es necesario
+    } else {
+      throw new Error("Error al cargar el archivo"); // Manejo de errores
+    }
+  };
+
+  const uploadFileBlue = async (file) => {
+    const formData = new FormData();
+    formData.append("file", file); // Asegúrate de nombrar el archivo como "file"
+
+    // Realiza la solicitud POST al backend
+    const response = await fetch(`${NEURONAL_NETWORK}/uploadfile-blueberry`, {
       method: "POST",
       body: formData,
     });
@@ -34,7 +55,7 @@ export const FileProvider = ({ children }) => {
   };
 
   return (
-    <FileContext.Provider value={{ fileData, error, uploadFile }}>
+    <FileContext.Provider value={{ fileData, error, uploadFile, uploadFileBlue }}>
       {children}
     </FileContext.Provider>
   );
