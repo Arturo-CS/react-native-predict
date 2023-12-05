@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity, StatusBar } from 'react-native';
+import { View, Text, Image, StyleSheet, StatusBar } from 'react-native';
 import Constants from 'expo-constants';
 import { Link } from 'react-router-native'; // Importa el componente Link
 
@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
   },
   centeredContent: {
     alignItems: 'center',
-    marginTop: 'auto',
+    marginTop: 0,
     marginBottom: 'auto',
   },
   title: {

@@ -6,16 +6,21 @@ import OptionsCamera from './OptionsCamera.jsx';
 import ProfilePlant from './ProfilePlant.jsx';
 import AppBar from './AppBar.jsx';
 import ViewCamera from './ViewCamera.jsx'; // Asegúrate de que esta importación sea correcta
+import Register from './Auth/Register.jsx';
+import Login from './Auth/Login.jsx';
 
 function Main() {
   const location = useLocation();
   const isRootPath = location.pathname === '/';
+  const isRootPathRegister = location.pathname === '/register';
 
   return (
     <>
-      {!isRootPath && <AppBar />}
+      {!(isRootPath || isRootPathRegister) && <AppBar />}
       <Routes>
-        <Route element={<Home />} path="/" />
+        <Route element={<Login />} path="/" />
+        <Route element={<Register />} path="/register" />
+        <Route element={<Home />} path="/home" />
         <Route element={<ListPlant />} path="/list" />
         <Route element={<OptionsCamera />} path="/options" />
         <Route element={<ViewCamera />} path="/camera" /> {/* Debe estar configurado de esta manera */}
